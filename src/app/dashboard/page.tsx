@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ApiError } from '@/lib/api-client';
+import { apiFetch, ApiError } from '@/lib/api-client';
 import { fetchDashboardSummary } from '@/lib/dashboard-api';
 import { money, monthName, dateTime, shortDate } from '@/lib/format';
 import { KpiCard, SectionCard, StatusBadge } from '@/components/ui';
@@ -13,21 +13,32 @@ import {
 } from '@/components/charts';
 import { CondominiumPicker } from '@/components/condominium-picker';
 import { useCondominium } from '@/components/condominium-context';
-import type { DashboardSummary } from '@/lib/types';
+import type { Building, DashboardSummary } from '@/lib/types';
 
 export default function DashboardHome() {
   const { selectedId: condominiumId } = useCondominium();
+  const [buildings, setBuildings] = useState<Building[]>([]);
+  const [buildingId, setBuildingId] = useState('');
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Carga el resumen al cambiar el condominio seleccionado.
+  // Edificios del condominio para el selector de alcance.
+  useEffect(() => {
+    if (!condominiumId) { setBuildings([]); setBuildingId(''); return; }
+    apiFetch<{ data: Building[] }>('/buildings', { query: { condominiumId, pageSize: 100 } })
+      .then((r) => setBuildings(r.data))
+      .catch(() => setBuildings([]));
+    setBuildingId('');
+  }, [condominiumId]);
+
+  // Carga el resumen al cambiar el condominio o el edificio seleccionado.
   useEffect(() => {
     if (!condominiumId) return;
     let cancelled = false;
     setLoading(true);
     setError(null);
-    fetchDashboardSummary(condominiumId)
+    fetchDashboardSummary(condominiumId, undefined, buildingId || undefined)
       .then((res) => {
         if (!cancelled) setSummary(res);
       })
@@ -42,7 +53,7 @@ export default function DashboardHome() {
     return () => {
       cancelled = true;
     };
-  }, [condominiumId]);
+  }, [condominiumId, buildingId]);
 
   const k = summary?.kpis;
 
@@ -65,6 +76,18 @@ export default function DashboardHome() {
         </div>
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <CondominiumPicker />
+          <label style={{ display: 'grid', gap: 4 }}>
+            <span className="muted" style={{ fontSize: 12 }}>Edificio</span>
+            <select
+              className="input"
+              value={buildingId}
+              onChange={(e) => setBuildingId(e.target.value)}
+              style={{ minWidth: 160 }}
+            >
+              <option value="">Todo el condominio</option>
+              {buildings.map((b) => <option key={b._id} value={b._id}>{b.name}</option>)}
+            </select>
+          </label>
           {summary?.period && (
             <div style={{ display: 'grid', gap: 4 }}>
               <span className="muted" style={{ fontSize: 12 }}>Periodo</span>

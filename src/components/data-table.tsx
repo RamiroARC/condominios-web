@@ -18,6 +18,8 @@ interface DataTableProps<T> {
   searchable?: boolean;
   /** Clave por fila para React. Por defecto usa `_id`. */
   rowKey?: (row: T) => string;
+  /** Cambiar este valor fuerza una recarga (p. ej. tras crear un registro). */
+  refreshKey?: number;
 }
 
 /**
@@ -30,6 +32,7 @@ export function DataTable<T extends { _id: string }>({
   query,
   searchable = true,
   rowKey,
+  refreshKey = 0,
 }: DataTableProps<T>) {
   const [data, setData] = useState<PaginatedResult<T> | null>(null);
   const [page, setPage] = useState(1);
@@ -70,7 +73,7 @@ export function DataTable<T extends { _id: string }>({
     return () => {
       cancelled = true;
     };
-  }, [path, page, debounced, JSON.stringify(query)]);
+  }, [path, page, debounced, JSON.stringify(query), refreshKey]);
 
   return (
     <div style={{ display: 'grid', gap: 12 }}>

@@ -6,6 +6,7 @@ import { useAuth } from '@/components/auth-context';
 import { useCondominium } from '@/components/condominium-context';
 import { CondominiumPicker } from '@/components/condominium-picker';
 import { Modal, Field } from '@/components/modal';
+import { RowActions } from '@/components/confirm-dialog';
 import { StatusBadge } from '@/components/ui';
 import { shortDate } from '@/lib/format';
 import type { Announcement, PaginatedResult } from '@/lib/types';
@@ -88,7 +89,7 @@ export default function CommunicationsPage() {
                 <td><StatusBadge status={a.status} /></td>
                 <td>{shortDate(a.publishedAt)}</td>
                 {canWrite && (
-                  <td style={{ display: 'flex', gap: 8 }}>
+                  <td style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
                     <button
                       className="btn"
                       disabled={busy === a._id || a.status !== 'DRAFT'}
@@ -104,6 +105,11 @@ export default function CommunicationsPage() {
                     >
                       Archivar
                     </button>
+                    <RowActions
+                      deletePath={`/announcements/${a._id}`}
+                      deleteMessage={`¿Eliminar el anuncio "${a.title}"?`}
+                      onDeleted={load}
+                    />
                   </td>
                 )}
               </tr>

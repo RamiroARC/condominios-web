@@ -143,11 +143,20 @@ src/
   en línea (respeta la máquina de estados del backend).
 - **Finanzas** — pestañas de Periodos (generar cargos / cerrar), Conceptos y
   Cargos (registrar pago del saldo).
-- **Reservas** — áreas comunes y reservas, con cancelación.
-- **Comunicaciones** — anuncios con publicar / archivar.
+- **Reservas** — áreas comunes y reservas (crear/cancelar).
+- **Comunicaciones** — anuncios con publicar / archivar / eliminar.
+- **Gastos** — registro de gastos por categoría (CRUD).
+- **Consumo de agua** — lecturas de medidor por departamento y periodo (CRUD).
+- **Activos** — ascensores y equipos con estado y próximo mantenimiento (CRUD).
+- **Usuarios** — alta de usuarios (con contraseña), activar/suspender y asignar
+  roles.
+- **Roles** — creación/edición de roles con selección de permisos por módulo.
 
-Las acciones de escritura se muestran solo si el usuario tiene el permiso
-correspondiente (`*:write`). Los gráficos usan **Recharts**.
+Todas las entidades soportan **crear, editar y eliminar con confirmación**
+(diálogo de advertencia antes de borrar). Las acciones de escritura se muestran
+solo si el usuario tiene el permiso correspondiente (`*:write`). Los gráficos
+usan **Recharts**. El condominio activo se elige con un selector compartido
+(`CondominiumPicker`) persistido entre pantallas.
 
 ---
 

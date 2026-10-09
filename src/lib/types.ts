@@ -116,6 +116,7 @@ export interface DashboardSummary {
 export interface MaintenanceTicket {
   _id: string;
   condominiumId: string;
+  buildingId?: string | null;
   apartmentId?: string | null;
   title: string;
   description?: string;
@@ -130,6 +131,7 @@ export interface MaintenanceTicket {
 export interface FeeConcept {
   _id: string;
   condominiumId: string;
+  buildingId?: string | null;
   name: string;
   description?: string;
   allocationMethod: string;
@@ -185,4 +187,69 @@ export interface Announcement {
   audienceType: string;
   status: string;
   publishedAt?: string | null;
+}
+
+export interface Occupant {
+  _id: string;
+  condominiumId: string;
+  apartmentId: string;
+  personId: string;
+  role: string;
+  startDate: string;
+  endDate?: string | null;
+  isPrimary: boolean;
+  status: string;
+}
+
+export interface Expense {
+  _id: string;
+  condominiumId: string;
+  category: string;
+  description?: string;
+  amount: number;
+  incurredAt: string;
+  year: number;
+  month: number;
+}
+
+export interface UtilityReading {
+  _id: string;
+  condominiumId: string;
+  apartmentId: string;
+  utilityType: string;
+  year: number;
+  month: number;
+  previousReading: number;
+  currentReading: number;
+  consumption: number;
+}
+
+export interface Asset {
+  _id: string;
+  condominiumId: string;
+  buildingId?: string | null;
+  name: string;
+  type: string;
+  status: string;
+  nextMaintenanceAt?: string | null;
+  location?: string;
+}
+
+export interface Role {
+  _id: string;
+  key: string;
+  name: string;
+  description?: string;
+  permissions: string[];
+  isSystem: boolean;
+}
+
+export interface AdminUser {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  status: string;
+  roleIds: string[];
 }
